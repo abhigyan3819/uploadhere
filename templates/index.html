@@ -58,10 +58,24 @@
             font-size: 18px;
             margin-bottom: 5px;
         }
-        .link-box a {
-            color: #03dac6;
-            text-decoration: none;
-            font-size: 16px;
+        .link-box input {
+            background: #1e1e1e;
+            border: 1px solid #03dac6;
+            color: white;
+            padding: 5px;
+            width: 100%;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .copy-btn {
+            margin-top: 5px;
+            background: #03dac6;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #121212;
+            font-weight: bold;
         }
     </style>
     <script>
@@ -85,12 +99,18 @@
                 document.querySelector('.loading').style.display = 'none';
                 if (data.filename) {
                     const link = data.type === 'image' ? `uploadmedia.onrender.com/image/${data.filename}` : `uploadmedia.onrender.com/video/${data.filename}`;
-                    document.getElementById('fileLink').href = data.type === 'image' ? `/image/${data.filename}` : `/video/${data.filename}`;;
-                    document.getElementById('fileLink').textContent = link;
+                    document.getElementById('fileLink').value = link;
                     document.querySelector('.link-box').style.display = 'block';
                 }
             })
             .catch(error => console.error('Error:', error));
+        }
+
+        function copyToClipboard() {
+            const linkInput = document.getElementById('fileLink');
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999);
+            document.execCommand("copy");
         }
     </script>
 </head>
@@ -102,7 +122,8 @@
         <div class="loading"></div>
         <div class="link-box">
             <p>Link:</p>
-            <a id="fileLink" href="#" target="_blank"></a>
+            <input type="text" id="fileLink" readonly>
+            <button class="copy-btn" onclick="copyToClipboard()">Copy</button>
         </div>
     </div>
 </body>
