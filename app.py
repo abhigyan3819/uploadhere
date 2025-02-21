@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
 import random
 import string
 
 app = Flask(__name__)
-IMAGE_FOLDER = os.path.join('image')
-VIDEO_FOLDER = os.path.join('video')
+UPLOAD_FOLDER = os.path.join('static')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+IMAGE_FOLDER = os.path.join(UPLOAD_FOLDER, 'image')
+VIDEO_FOLDER = os.path.join(UPLOAD_FOLDER, 'video')
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 os.makedirs(VIDEO_FOLDER, exist_ok=True)
 
@@ -30,7 +32,6 @@ def upload_file():
         filename = generate_filename(file_ext)
         file_path = os.path.join(IMAGE_FOLDER, filename)
         file.save(file_path)
-        print(file_path," saved")
         return jsonify({'filename': filename, 'type': 'image'})
     elif file_ext in ['.mp4', '.avi', '.mov', '.mkv']:
         filename = generate_filename(file_ext)
@@ -40,12 +41,21 @@ def upload_file():
     else:
         return jsonify({'error': 'Invalid file type'}), 400
 
-@app.route('/images/<filename>')
+@app.route('/image/<filename>')
 def get_image(filename):
-    return render_template("image.html",file=filename)
-@app.route('/videos/<filename>')
+    return render_template("image.html", file=f"/static/image/{filename}")
+
+@app.route('/video/<filename>')
 def get_video(filename):
-    return render_template("video.html",file=filename)
+    return render_template("video.html", file=f"/static/video/{filename}")
+
+@app.route('/static/image/<filename>')
+def serve_image(filename):
+    return send_from_directory(IMAGE_FOLDER, filename)
+
+@app.route('/static/video/<filename>')
+def serve_video(filename):
+    return send_from_directory(VIDEO_FOLDER, filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
