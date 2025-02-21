@@ -41,11 +41,11 @@ def upload_file():
     else:
         return jsonify({'error': 'Invalid file type'}), 400
 
-@app.route('/image/<filename>')
+@app.route('/images/<filename>')
 def get_image(filename):
     return render_template("image.html", file=f"/static/image/{filename}")
 
-@app.route('/video/<filename>')
+@app.route('/videos/<filename>')
 def get_video(filename):
     return render_template("video.html", file=f"/static/video/{filename}")
 
