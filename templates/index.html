@@ -26,14 +26,42 @@
             display: none;
         }
         label {
-            background: #6200ea;
+            background: #157DEC;
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
         }
         label:hover {
-            background: #3700b3;
+            background: #157DEC;
+        }
+        .loading {
+            display: none;
+            margin-top: 10px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .link-box {
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+        }
+        .link-box p {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .link-box a {
+            color: #03dac6;
+            text-decoration: none;
+            font-size: 16px;
         }
     </style>
     <script>
@@ -41,6 +69,9 @@
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
             if (!file) return;
+            
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.link-box').style.display = 'none';
             
             const formData = new FormData();
             formData.append('file', file);
@@ -51,10 +82,12 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.type === 'image') {
-                    window.location.href = `/image/${data.filename}`;
-                } else if (data.type === 'video') {
-                    window.location.href = `/video/${data.filename}`;
+                document.querySelector('.loading').style.display = 'none';
+                if (data.filename) {
+                    const link = data.type === 'image' ? `/image/${data.filename}` : `/video/${data.filename}`;
+                    document.getElementById('fileLink').href = link;
+                    document.getElementById('fileLink').textContent = link;
+                    document.querySelector('.link-box').style.display = 'block';
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -66,6 +99,11 @@
         <h2>Upload an Image or Video</h2>
         <input type="file" id="fileInput" accept="image/*,video/*" onchange="uploadFile()">
         <label for="fileInput">Choose File</label>
+        <div class="loading"></div>
+        <div class="link-box">
+            <p>Link:</p>
+            <a id="fileLink" href="#" target="_blank"></a>
+        </div>
     </div>
 </body>
 </html>
