@@ -4,7 +4,7 @@ import random
 import string
 
 app = Flask(__name__)
-UPLOAD_FOLDER = 'static'
+UPLOAD_FOLDER = ''
 IMAGE_FOLDER = os.path.join(UPLOAD_FOLDER, 'images')
 VIDEO_FOLDER = os.path.join(UPLOAD_FOLDER, 'videos')
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
