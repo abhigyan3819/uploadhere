@@ -30,6 +30,7 @@ def upload_file():
         filename = generate_filename(file_ext)
         file_path = os.path.join(IMAGE_FOLDER, filename)
         file.save(file_path)
+        print(file_path," saved")
         return jsonify({'filename': filename, 'type': 'image'})
     elif file_ext in ['.mp4', '.avi', '.mov', '.mkv']:
         filename = generate_filename(file_ext)
