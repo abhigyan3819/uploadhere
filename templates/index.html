@@ -98,7 +98,7 @@
             .then(data => {
                 document.querySelector('.loading').style.display = 'none';
                 if (data.filename) {
-                    const link = data.type === 'image' ? `uploadmedia.onrender.com/image/${data.filename}` : `uploadmedia.onrender.com/video/${data.filename}`;
+                    const link = data.type === 'image' ? `uploadmedia.onrender.com/images/${data.filename}` : `uploadmedia.onrender.com/videos/${data.filename}`;
                     document.getElementById('fileLink').value = link;
                     document.querySelector('.link-box').style.display = 'block';
                 }
