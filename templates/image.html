@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .media-box {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #1e1e1e;
+            padding: 10px;
+            position: relative;
+        }
+        img, video {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+        .play-button {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .play-button::before {
+            content: '\25BA';
+            color: white;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="media-box">
+        <img src="/static/{{filename}}" alt="Uploaded Image">
+    </div>
+</body>
+</html>
