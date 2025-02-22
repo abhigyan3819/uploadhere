@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .button-container {
+            margin-bottom: 15px;
+        }
+        .toggle-button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #157DEC;
+            color: white;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .toggle-button.active {
+            background-color: #0a5ab4;
+        }
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            width: 100%;
+            max-width: 900px;
+            overflow-y: auto;
+            max-height: 80vh;
+            padding: 10px;
+            background: #1e1e1e;
+            border-radius: 10px;
+        }
+        .gallery-container img,
+        .gallery-container video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        .gallery-container img:hover,
+        .gallery-container video:hover {
+            transform: scale(1.1);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function showSection(section) {
+            document.getElementById('image-section').classList.add('hidden');
+            document.getElementById('video-section').classList.add('hidden');
+            document.getElementById(section).classList.remove('hidden');
+
+            document.getElementById('image-btn').classList.remove('active');
+            document.getElementById('video-btn').classList.remove('active');
+            document.getElementById(section + '-btn').classList.add('active');
+        }
+    </script>
+</head>
+<body>
+    <h2>Gallery</h2>
+    <div class="button-container">
+        <button id="image-btn" class="toggle-button active" onclick="showSection('image-section')">Images</button>
+        <button id="video-btn" class="toggle-button" onclick="showSection('video-section')">Videos</button>
+    </div>
+
+    <div id="image-section" class="gallery-container">
+        {% for img in images %}
+            <img src="{{ img }}" alt="Uploaded Image">
+        {% endfor %}
+    </div>
+
+    <div id="video-section" class="gallery-container hidden">
+        {% for vid in videos %}
+            <video controls>
+                <source src="{{ vid }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        {% endfor %}
+    </div>
+</body>
+</html>
