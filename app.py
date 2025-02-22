@@ -60,8 +60,9 @@ def serve_video(filename):
 @app.route('/gallery')
 def gallery():
     images = os.listdir(IMAGE_FOLDER)
+    videos = [f"/static/video/{vid}" for vid in os.listdir(VIDEO_FOLDER) if vid.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))]
     images = [f"/static/image/{img}" for img in images if img.lower().endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-    return render_template('gallery.html', images=images)
+    return render_template('gallery.html', images=images,videos=videos)
     
 if __name__ == '__main__':
     app.run(debug=True)
