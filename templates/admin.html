@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Log - Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <h2>Visitor Log - Admin Panel</h2>
+    <a href="/download-log" class="download-btn">Download Log File</a>
+    <table>
+        <tr>
+            <th>No.</th>
+            <th>Timestamp</th>
+            <th>IP Address</th>
+            <th>Device/User-Agent</th>
+            <th>Location</th>
+            <th>Coordinates (Lat, Long)</th>
+        </tr>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.no }}</td>
+            <td>{{ log.timestamp }}</td>
+            <td>{{ log.ip }}</td>
+            <td>{{ log.user_agent }}</td>
+            <td>{{ log.location }}</td>
+            <td>{{ log.coordinates }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
