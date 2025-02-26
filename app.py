@@ -14,7 +14,7 @@ VIDEO_FOLDER = os.path.join(UPLOAD_FOLDER, 'video')
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 os.makedirs(VIDEO_FOLDER, exist_ok=True)
 
-LOG_FILE = "/static/visitor_log.txt"
+LOG_FILE = os.path.join(UPLOAD_FOLDER, "visitor_log.txt")
 
 if not os.path.exists(LOG_FILE):
     with open(LOG_FILE, "w") as f:
