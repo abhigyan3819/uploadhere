@@ -7,10 +7,10 @@ import datetime
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = os.path.join('static')
+UPLOAD_FOLDER = os.path.join("static")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-IMAGE_FOLDER = os.path.join(UPLOAD_FOLDER, 'image')
-VIDEO_FOLDER = os.path.join(UPLOAD_FOLDER, 'video')
+IMAGE_FOLDER = os.path.join(UPLOAD_FOLDER, "image")
+VIDEO_FOLDER = os.path.join(UPLOAD_FOLDER, "video")
 os.makedirs(IMAGE_FOLDER, exist_ok=True)
 os.makedirs(VIDEO_FOLDER, exist_ok=True)
 
@@ -19,14 +19,12 @@ LOG_FILE = os.path.join(UPLOAD_FOLDER, "visitor_log.txt")
 if not os.path.exists(LOG_FILE):
     with open(LOG_FILE, "w") as f:
         f.write("No. | Timestamp | IP Address | Device/User-Agent | Location | Coordinates (Lat, Long)\n")
-        f.write("="*120 + "\n")  
+        f.write("=" * 120 + "\n")  
 
 def generate_filename(extension):
-    """Generates a random filename"""
     return ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + extension
 
 def get_location(ip):
-    """Fetches geolocation data from ipinfo.io"""
     try:
         response = requests.get(f"https://ipinfo.io/{ip}/json")
         data = response.json()
@@ -39,14 +37,20 @@ def get_location(ip):
     except:
         return "Unknown", "Unknown", "Unknown", "Unknown"
 
+def get_public_ip():
+    try:
+        response = requests.get("https://api64.ipify.org?format=json")
+        return response.json().get("ip", "Unknown")
+    except:
+        return "Unknown"
+
 def log_visitor(ip, user_agent):
-    """Logs visitor details to the log file"""
     city, country, latitude, longitude = get_location(ip)
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with open(LOG_FILE, "r") as file:
         lines = file.readlines()
-        serial_no = len(lines) - 1
+        serial_no = len(lines) - 1  
 
     log_entry = f"{serial_no} | {timestamp} | {ip} | {user_agent} | {city}, {country} | {latitude}, {longitude}\n"
 
@@ -55,14 +59,35 @@ def log_visitor(ip, user_agent):
 
 @app.before_request
 def before_request():
-    """Logs visitor data for every request"""
-    ip = request.remote_addr
-    user_agent = request.headers.get('User-Agent')
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0]
+    if ip == "127.0.0.1":
+        ip = get_public_ip()
+
+    user_agent = request.headers.get("User-Agent")
     log_visitor(ip, user_agent)
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/admin')
+def admin():
+    logs = []
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, "r") as file:
+            lines = file.readlines()[2:]  
+            for line in lines:
+                parts = line.strip().split(" | ")
+                if len(parts) == 6:
+                    logs.append({
+                        "no": parts[0],
+                        "timestamp": parts[1],
+                        "ip": parts[2],
+                        "user_agent": parts[3],
+                        "location": parts[4],
+                        "coordinates": parts[5]
+                    })
+    return render_template("admin.html", logs=logs)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -95,14 +120,6 @@ def get_image(filename):
 def get_video(filename):
     return render_template("video.html", file=f"/static/video/{filename}")
 
-@app.route('/static/image/<filename>')
-def serve_image(filename):
-    return send_from_directory(IMAGE_FOLDER, filename)
-
-@app.route('/static/video/<filename>')
-def serve_video(filename):
-    return send_from_directory(VIDEO_FOLDER, filename)
-
 @app.route('/gallery')
 def gallery():
     images = os.listdir(IMAGE_FOLDER)
@@ -112,7 +129,6 @@ def gallery():
 
 @app.route('/download-log')
 def download_log():
-    """Allows the log file to be downloaded"""
     return send_from_directory(os.getcwd(), LOG_FILE, as_attachment=True)
 
 if __name__ == '__main__':
